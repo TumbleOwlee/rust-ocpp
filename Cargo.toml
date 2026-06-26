@@ -19,6 +19,9 @@ categories = [
 publish = true
 exclude = ["docs/", "src/tests"]
 
+[workspace]
+members = ["codegen"]
+
 [package.metadata.docs.rs]
 all-features = true
 
@@ -26,9 +29,7 @@ all-features = true
 # No default feature, so each version must be explicitly enabled
 v1_6 = []
 v2_0_1 = []
-# Not quite ready for use yet - needs to drop the use of getters and setters and more.
-# Run clippy on it to gain an appreciation of what must be done
-wip_v2_1 = []
+v2_1 = []
 
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -51,6 +52,7 @@ rust_decimal = { version = "1.36.0", features = [
 rust_decimal_macros = "1.40.0"
 serde_json = "1"
 lazy_static = "1.4"
+static_assertions = "1.1.0"
 
 [dev-dependencies]
 chrono = { version = "0.4.43", default-features = false, features = ["clock"] }
