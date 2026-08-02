@@ -7,3 +7,5 @@
 
 #[cfg(all(test, any(feature = "v2_0_1", feature = "v2_1")))]
 mod datetime_rfc3339;
+#[cfg(all(test, any(feature = "v2_0_1", feature = "v2_1")))]
+mod validator;
