@@ -8,14 +8,26 @@ through gate 1.
 
 ---
 
-<!--
-Shape of an entry — delete this comment when the first entry lands.
+## Empty identifier string
 
-## <Condition>
+**What happens:** The identifier-string validator accepts `""`.
+**Why:** The regex quantifier is `*`, not `+`, and the OCA schemas express
+required-ness through field presence rather than through a minimum length on
+`identifierString`. Emptiness is the schema's business, not the charset check's.
+**Cites:** CG-R-006
 
-**What happens:** <the observable behavior>
-**Why:** <the reason it is this way>
-**Cites:** CG-R-0nn
--->
+## Sub-second precision is dropped on serialize
 
-*(Empty.)*
+**What happens:** A date-time carrying milliseconds serializes without them;
+round-tripping through the adapter is lossy.
+**Why:** OCPP timestamps are specified to second precision. Emitting more
+precision than the protocol defines invites peers to depend on it.
+**Cites:** CG-R-001
+
+## v2.0.1 emits no decimal range validators
+
+**What happens:** `validator.rs` under v2.0.1 contains only the
+identifier-string validator; the decimal range validators exist under v2.1 only.
+**Why:** They are emitted per distinct bound pair found in the schemas, and the
+2.0.1 schemas declare none. Their absence is generator output, not an omission.
+**Cites:** CG-R-008
