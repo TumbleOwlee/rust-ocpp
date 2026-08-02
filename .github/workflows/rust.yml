@@ -44,9 +44,6 @@ jobs:
 
   # Coverage floor, see AGENTS.md / CONTRIBUTING.md. Separate job because
   # cargo-llvm-cov manages its own RUSTFLAGS and profile output.
-  #
-  # Reports only for now. The `--fail-under-lines 80` gate is turned on in the
-  # PR that lands the helper tests — see docs/specs/codegen/requirements.md.
   coverage:
     runs-on: ubuntu-latest
     env:
@@ -60,4 +57,4 @@ jobs:
           components: llvm-tools-preview
       - uses: Swatinem/rust-cache@v2
       - uses: taiki-e/install-action@cargo-llvm-cov
-      - run: cargo llvm-cov --all-features --summary-only
+      - run: cargo llvm-cov --all-features --fail-under-lines 80
