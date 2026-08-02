@@ -1,4 +1,4 @@
-# rust-ocpp
+# OCPP Library in Rust
 
 [![crates.io](https://img.shields.io/crates/v/rust-ocpp.svg)](https://crates.io/crates/rust-ocpp)
 [![workflow](https://img.shields.io/github/actions/workflow/status/codelabsab/rust-ocpp/rust.yml)](https://github.com/codelabsab/rust-ocpp/actions)
