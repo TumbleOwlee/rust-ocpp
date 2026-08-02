@@ -167,6 +167,21 @@ Use `rustfmt` before you PR.
 
 pre-commit config is available. You can read more about it at [pre-commits](https://pre-commit.com) website and checkout their repo on [github](https://github.com/pre-commit/pre-commit)
 
+This repo is **spec-driven**: [`docs/specs/`](./docs/specs/) is the authoritative
+description of what the crate must do, split by capability area, and code is expected to
+conform to it. A behavior change updates the spec in the same PR. See
+[`CONTRIBUTING.md`](./CONTRIBUTING.md) for the full workflow.
+
+### Documentation
+
+| Document | Contains |
+|---|---|
+| [`PRD.md`](./PRD.md) | Why this exists, goals, non-goals |
+| [`ARCHITECTURE.md`](./ARCHITECTURE.md) | Module map, data flow, testing seams |
+| [`docs/specs/`](./docs/specs/) | Authoritative behavior specification, by area |
+| [`CONTRIBUTING.md`](./CONTRIBUTING.md) | Setup, TDD rules, PR expectations |
+| [`AGENTS.md`](./AGENTS.md) | Agent-facing workflow and conventions |
+
 ## Releasing a new version
 
 1. Update the version of the library and push the changes to the main branch.
