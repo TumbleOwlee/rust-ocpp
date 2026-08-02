@@ -48,8 +48,10 @@ cites the requirement ID, directly beside the test declaration:
 
 ```rust
 #[test]
-/// OB-R-012 — The checksum is computed over the full frame excluding the checksum field.
-fn ut_checksum_excludes_trailer() { /* … */ }
+/// CG-R-001 — Serializing a UTC date-time through the emitted RFC3339 adapter shall
+/// produce an RFC3339 string with whole-second precision and a literal `Z` UTC
+/// designator, discarding any sub-second component.
+fn it_datetime_serializes_second_precision_with_z() { /* … */ }
 ```
 
 Line coverage must stay at or above **80%**, enforced in CI. Coverage is a floor,

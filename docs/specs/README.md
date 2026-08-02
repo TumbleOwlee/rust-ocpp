@@ -10,13 +10,29 @@ resolve it, don't paper over it.
 
 | Area | Covers | ID prefix |
 |---|---|---|
-| [`v1_6`](./v1_6/) | OCPP 1.6 messages and types | `OA-R-*` |
-| [`v2_0_1`](./v2_0_1/) | OCPP 2.0.1 messages, datatypes, enumerations | `OB-R-*` |
-| [`v2_1`](./v2_1/) | OCPP 2.1 messages, datatypes, enumerations (WIP) | `OC-R-*` |
-| [`codegen`](./codegen/) | The schema-to-Rust generator in `codegen/` | `CG-R-*` |
+| [`codegen`](./codegen/) | The schema-to-Rust generator in `codegen/`, and the code it emits | `CG-R-*` |
 
 Cross-cutting: [`non-functional-requirements.md`](./non-functional-requirements.md)
 (`NF-R-nnn`).
+
+Areas are created when their first requirement lands, not ahead of it. An area
+directory full of empty stubs teaches a reader that specs here are decorative, so
+the version areas were removed until they have something normative to hold.
+
+**Reserved prefixes.** These are spoken for, so nothing else may claim them:
+
+| Prefix | Reserved for |
+|---|---|
+| `OA-R-*` | a future `v1_6` area — OCPP 1.6 message and type behavior |
+| `OB-R-*` | a future `v2_0_1` area — OCPP 2.0.1 message and type behavior |
+| `OC-R-*` | a future `v2_1` area — OCPP 2.1 message and type behavior |
+
+No ID under those prefixes has ever been issued, so a new area starts at `-001`.
+
+To create one, through gate 1: make `docs/specs/<area>/`, give it at least
+`requirements.md` and `edge-cases.md` (add `api-contract.md` for a public surface
+and `data-contract.md` for a wire format), and add its row to the table above, to
+`PRD.md`, and to the routing table in [`AGENTS.md`](../../AGENTS.md).
 
 ## Rules for writing specs
 

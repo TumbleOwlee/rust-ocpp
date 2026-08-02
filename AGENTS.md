@@ -25,7 +25,7 @@ crate. Product framing: [`PRD.md`](./PRD.md). Structure:
 
 ## TDD — fixed order within every stage
 
-1. Write the test. Its doc comment cites the requirement ID (`/// OB-R-012 — …`).
+1. Write the test. Its doc comment cites the requirement ID (`/// CG-R-001 — …`).
 2. Run it, watch it fail for the right reason, report the failure. A wrong assertion, a
    test-side compile error, or a pass before the code exists proves nothing.
 3. Minimum implementation that passes.
@@ -157,10 +157,8 @@ code — never reach `main`. Remove the worktree after the merge.
 
 | Task touches | Read | ID prefix |
 |---|---|---|
-| OCPP 1.6 messages and types | [`docs/specs/v1_6/`](./docs/specs/v1_6/) | `OA-R-*` |
-| OCPP 2.0.1 messages, datatypes, enumerations | [`docs/specs/v2_0_1/`](./docs/specs/v2_0_1/) | `OB-R-*` |
-| OCPP 2.1 messages, datatypes, enumerations (WIP) | [`docs/specs/v2_1/`](./docs/specs/v2_1/) | `OC-R-*` |
-| The schema-to-Rust generator in `codegen/` | [`docs/specs/codegen/`](./docs/specs/codegen/) | `CG-R-*` |
+| The schema-to-Rust generator in `codegen/`, and the code it emits | [`docs/specs/codegen/`](./docs/specs/codegen/) | `CG-R-*` |
+| OCPP 1.6 / 2.0.1 / 2.1 message and type behavior | *No area yet.* Gate 1 creates it — see [`docs/specs/README.md`](./docs/specs/README.md) | `OA-R-*` / `OB-R-*` / `OC-R-*` |
 | Platforms, toolchain, performance posture, security, versioning, testing conventions | [`docs/specs/non-functional-requirements.md`](./docs/specs/non-functional-requirements.md) | `NF-R-*` |
 | Module graph, data flow, concurrency model | [`ARCHITECTURE.md`](./ARCHITECTURE.md) | — |
 | Contribution workflow, conventions | [`CONTRIBUTING.md`](./CONTRIBUTING.md) | — |

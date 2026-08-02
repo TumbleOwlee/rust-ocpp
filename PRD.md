@@ -58,10 +58,11 @@ The specification is split by area; each owns its behavior end to end.
 
 | Area | Covers | ID prefix |
 |---|---|---|
-| [`v1_6`](./docs/specs/v1_6/) | OCPP 1.6 messages and types | `OA-R-*` |
-| [`v2_0_1`](./docs/specs/v2_0_1/) | OCPP 2.0.1 messages, datatypes, enumerations | `OB-R-*` |
-| [`v2_1`](./docs/specs/v2_1/) | OCPP 2.1 messages, datatypes, enumerations (WIP) | `OC-R-*` |
-| [`codegen`](./docs/specs/codegen/) | The schema-to-Rust generator in `codegen/` | `CG-R-*` |
+| [`codegen`](./docs/specs/codegen/) | The schema-to-Rust generator in `codegen/`, and the code it emits | `CG-R-*` |
+
+Per-version areas for OCPP 1.6, 2.0.1 and 2.1 are not created yet; `OA-R-*`,
+`OB-R-*` and `OC-R-*` are reserved for them. See
+[`docs/specs/README.md`](./docs/specs/README.md) for how an area is created.
 
 Cross-cutting concerns live in
 [`docs/specs/non-functional-requirements.md`](./docs/specs/non-functional-requirements.md).
