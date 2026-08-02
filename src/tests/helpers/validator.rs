@@ -83,3 +83,58 @@ identifier_string_tests!(
     v2_1,
     crate::v2_1::helpers::validator::validate_identifier_string
 );
+
+/// Decimal range validators are emitted per distinct bound pair found in the
+/// schemas, so v2.0.1 has none — see the "v2.0.1 emits no decimal range
+/// validators" entry in `docs/specs/codegen/edge-cases.md`.
+#[cfg(feature = "v2_1")]
+mod decimal_range_v2_1 {
+    use crate::v2_1::helpers::validator::{validate_decimal_max_0, validate_decimal_min_0_max_100};
+    use rust_decimal_macros::dec;
+
+    #[test]
+    /// CG-R-008 — A range validator emitted for a schema-declared `minimum` and/or
+    /// `maximum` shall accept a value inside the range and reject a value outside it,
+    /// returning a validation error that distinguishes below-minimum from
+    /// above-maximum.
+    fn it_decimal_range_rejects_outside_bounds() {
+        assert!(validate_decimal_min_0_max_100(&dec!(50)).is_ok());
+
+        let below = validate_decimal_min_0_max_100(&dec!(-0.0001))
+            .expect_err("a value under the minimum is rejected");
+        assert_eq!(below.code, "value below minimum");
+
+        let above = validate_decimal_min_0_max_100(&dec!(100.0001))
+            .expect_err("a value over the maximum is rejected");
+        assert_eq!(above.code, "value above maximum");
+    }
+
+    #[test]
+    /// CG-R-008 — A validator emitted for a `maximum` alone imposes no lower bound:
+    /// an arbitrarily small value is accepted and only the upper bound rejects.
+    fn it_decimal_max_only_bounds_one_side() {
+        assert!(validate_decimal_max_0(&dec!(-99999.5)).is_ok());
+
+        let above =
+            validate_decimal_max_0(&dec!(0.0001)).expect_err("a positive value is rejected");
+        assert_eq!(above.code, "value above maximum");
+    }
+
+    #[test]
+    /// CG-R-009 — A range validator shall treat both declared bounds as inclusive: a
+    /// value exactly equal to the minimum or the maximum shall be accepted.
+    fn it_decimal_range_accepts_exact_bounds() {
+        assert!(validate_decimal_min_0_max_100(&dec!(0)).is_ok());
+        assert!(validate_decimal_min_0_max_100(&dec!(100)).is_ok());
+        assert!(validate_decimal_max_0(&dec!(0)).is_ok());
+    }
+
+    #[test]
+    /// CG-R-009 — Inclusivity holds for bound values written with trailing decimal
+    /// places, which `Decimal` represents with a different scale than the integer form.
+    fn it_decimal_range_accepts_exact_bounds_at_other_scales() {
+        assert!(validate_decimal_min_0_max_100(&dec!(0.0000)).is_ok());
+        assert!(validate_decimal_min_0_max_100(&dec!(100.0000)).is_ok());
+        assert!(validate_decimal_max_0(&dec!(-0.0)).is_ok());
+    }
+}
