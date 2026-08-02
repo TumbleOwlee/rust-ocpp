@@ -31,6 +31,10 @@ value as JSON `null`, and shall deserialize JSON `null` to an absent value.
 **CG-R-005** — Deserializing JSON `null` through the non-optional adapter shall
 fail with a deserialization error.
 
+**CG-R-010** — The optional variant of the adapter shall serialize and
+deserialize a present value with the same observable semantics as the
+non-optional variant.
+
 ## 2. Emitted identifier-string validator
 
 **CG-R-006** — The emitted identifier-string validator shall accept a string

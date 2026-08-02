@@ -1,6 +1,6 @@
 //! Tests for the generated RFC3339 date-time serde adapter.
 //!
-//! Specified by CG-R-001..005 in `docs/specs/codegen/requirements.md`.
+//! Specified by CG-R-001..005 and CG-R-010 in `docs/specs/codegen/requirements.md`.
 //!
 //! The adapter is exercised through real serde derives rather than by calling
 //! `serialize`/`deserialize` directly — the field attribute is how consumers reach
@@ -27,6 +27,18 @@ macro_rules! datetime_helper_tests {
             struct Optional {
                 #[serde(with = $optional)]
                 ts: Option<DateTime<Utc>>,
+            }
+
+            /// The message a deserialization error carries, with serde's positional
+            /// `at line L column C` suffix removed. The position varies with input
+            /// length, so comparing whole messages would let a canned error string
+            /// masquerade as a forwarded one.
+            fn parse_message(err: &serde_json::Error) -> String {
+                let rendered = err.to_string();
+                match rendered.split_once(" at line ") {
+                    Some((message, _position)) => message.to_string(),
+                    None => rendered,
+                }
             }
 
             fn at(rfc3339: &str) -> DateTime<Utc> {
@@ -65,22 +77,34 @@ macro_rules! datetime_helper_tests {
             /// fail with a deserialization error carrying the underlying parse message, never
             /// a panic.
             fn it_datetime_rejects_malformed_string() {
-                let err = serde_json::from_str::<Required>(r#"{"ts":"2023-01-15T14:30:00X"}"#)
-                    .expect_err("a non-RFC3339 string is rejected");
-
-                assert_eq!(err.classify(), serde_json::error::Category::Data);
-                assert!(
-                    err.to_string()
-                        .contains("input contains invalid characters"),
-                    "expected the chrono parse message to survive, got: {err}"
-                );
-
+                let bad_character =
+                    serde_json::from_str::<Required>(r#"{"ts":"2023-01-15T14:30:00X"}"#)
+                        .expect_err("a non-RFC3339 string is rejected");
                 let truncated = serde_json::from_str::<Required>(r#"{"ts":"2023-01-15T14:30"}"#)
                     .expect_err("a truncated timestamp is rejected");
 
-                assert!(
-                    truncated.to_string().contains("premature end of input"),
-                    "expected the chrono parse message to survive, got: {truncated}"
+                for err in [&bad_character, &truncated] {
+                    assert_eq!(err.classify(), serde_json::error::Category::Data);
+                    assert!(
+                        !parse_message(err).is_empty(),
+                        "expected a parse message, got an empty error"
+                    );
+                    assert!(
+                        !err.to_string().contains("invalid type"),
+                        "expected a parse failure, not serde's generic type mismatch: {err}"
+                    );
+                }
+
+                // The two inputs fail for different reasons — a disallowed character versus
+                // a string that ends early — so a forwarded parse message differs between
+                // them. A single canned error string would not. This pins "carrying the
+                // underlying parse message" without pinning chrono's wording, which is not
+                // ours to depend on.
+                assert_ne!(
+                    parse_message(&bad_character),
+                    parse_message(&truncated),
+                    "expected the underlying parse message to reach the caller, \
+                     but both inputs produced the same message"
                 );
             }
 
@@ -99,8 +123,9 @@ macro_rules! datetime_helper_tests {
             }
 
             #[test]
-            /// CG-R-004 — A present value round-trips through the optional variant unchanged,
-            /// at the same whole-second precision as the required variant.
+            /// CG-R-010 — The optional variant of the adapter shall serialize and deserialize
+            /// a present value with the same observable semantics as the non-optional
+            /// variant.
             fn it_datetime_option_roundtrips_present_value() {
                 let present = Optional {
                     ts: Some(at("2023-01-15T14:30:00Z")),
